@@ -1,0 +1,6 @@
+Name: twitster
+Description: twitster
+Version: 0.1
+
+Requires: 
+Libs: -r:./twitster.dll

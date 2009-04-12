@@ -1,0 +1,34 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" ctype="Workspace" />
+  <MonoDevelop.Ide.DebuggingService>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService>
+  <MonoDevelop.Ide.Workbench ctype="Workbench">
+    <Files>
+      <File FileName="howler/HowlerMain.cs" Line="54" Column="28" />
+      <File FileName="howler/UI/TwitterTweet.cs" Line="87" Column="58" />
+      <File FileName="howler/UI/TwitterClient.cs" Line="356" Column="1" />
+      <File FileName="twitster/Twitster.cs" Line="30" Column="42" />
+      <File FileName="twitster/Connection.cs" Line="119" Column="23" />
+      <File FileName="howler/Accounts/AccountDetails.cs" Line="45" Column="41" />
+      <File FileName="howler/Accounts/AccountManager.cs" Line="21" Column="19" />
+      <File FileName="howler/App.cs" Line="27" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="howler" expanded="True">
+            <Node name="Accounts" expanded="True" />
+            <Node name="Resources" expanded="True" />
+            <Node name="UI" expanded="True" />
+          </Node>
+          <Node name="Packages" expanded="True" />
+          <Node name="twitster" expanded="True" />
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+</Properties>

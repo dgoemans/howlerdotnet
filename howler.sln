@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "howler", "howler\howler.csproj", "{7171B8DC-047C-42C1-89B3-5A1ED967A503}"
+EndProject
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{FA09B752-33AC-45CC-9D86-B202AF81F696}"
+EndProject
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "howlerTranslation", "howlerTranslation\howlerTranslation.mdproj", "{9D91A8A9-C5EA-4CB7-BDB4-AB85328C10D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "twitster", "twitster\twitster.csproj", "{522B5E78-57A2-437A-8601-09A55B3DE859}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{522B5E78-57A2-437A-8601-09A55B3DE859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{522B5E78-57A2-437A-8601-09A55B3DE859}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{522B5E78-57A2-437A-8601-09A55B3DE859}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{522B5E78-57A2-437A-8601-09A55B3DE859}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7171B8DC-047C-42C1-89B3-5A1ED967A503}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7171B8DC-047C-42C1-89B3-5A1ED967A503}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7171B8DC-047C-42C1-89B3-5A1ED967A503}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7171B8DC-047C-42C1-89B3-5A1ED967A503}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D91A8A9-C5EA-4CB7-BDB4-AB85328C10D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D91A8A9-C5EA-4CB7-BDB4-AB85328C10D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D91A8A9-C5EA-4CB7-BDB4-AB85328C10D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D91A8A9-C5EA-4CB7-BDB4-AB85328C10D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA09B752-33AC-45CC-9D86-B202AF81F696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA09B752-33AC-45CC-9D86-B202AF81F696}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA09B752-33AC-45CC-9D86-B202AF81F696}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA09B752-33AC-45CC-9D86-B202AF81F696}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		version = 0.1
+		StartupItem = howler\howler.csproj
+	EndGlobalSection
+EndGlobal
