@@ -57,6 +57,7 @@
     <Compile Include="UI\ITweetSignalEmitter.cs" />
     <Compile Include="Accounts\AccountDetails.cs" />
     <Compile Include="Accounts\AccountManager.cs" />
+    <Compile Include="Accounts\AccountStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
