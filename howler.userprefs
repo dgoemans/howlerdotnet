@@ -3,7 +3,7 @@
   <MonoDevelop.Ide.DebuggingService>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService>
-  <MonoDevelop.Ide.Workbench ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="howler/App.cs" ctype="Workbench">
     <Files>
       <File FileName="howler/HowlerMain.cs" Line="54" Column="28" />
       <File FileName="howler/UI/TwitterTweet.cs" Line="87" Column="58" />
@@ -21,6 +21,7 @@
             <Node name="Accounts" expanded="True" />
             <Node name="Resources" expanded="True" />
             <Node name="UI" expanded="True" />
+            <Node name="App.cs" selected="True" />
           </Node>
           <Node name="Packages" expanded="True" />
           <Node name="twitster" expanded="True" />
