@@ -33,18 +33,19 @@ namespace howler
 			layout.Margin = 10;
 
 			this.image = new QLabel();
-			this.image.MinimumSize = new QSize( 64, 64 );
-			this.image.MaximumSize = new QSize( 64, 64 );
+			this.image.MinimumSize = new QSize( 48, 48 );
+			this.image.MaximumSize = new QSize( 48, 48 );
 			this.image.ScaledContents = true;
 			
 			this.text = new QLabel();
 			this.text.WordWrap = true;
+			this.text.MinimumSize = new QSize( 250, 48 );
 
 			this.layout.AddWidget( image );
 			this.layout.AddWidget( text );
 
 		}
-		
+
 		public void SetStatus( Status status )
 		{
 			string text = status.Text;
@@ -80,7 +81,8 @@ namespace howler
 			text += "<br>(posted from: " + status.Source + ")";
 			
 			this.text.Text = text;
-			this.text.AdjustSize();
+			int height = this.text.HeightForWidth( 250 ) ;
+			this.text.MinimumSize = new QSize( 250, height );
 
 			QObject.Connect( this.text, SIGNAL("linkActivated(QString)"), this, SLOT("linkClicked(QString)") );
 			

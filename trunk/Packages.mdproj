@@ -5,19 +5,5 @@
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{FA09B752-33AC-45CC-9D86-B202AF81F696}</ProjectGuid>
-    <Packages>
-      <Packages>
-        <Package name="Linux Binaries">
-          <Builder targetFile="howler_110409.tar.gz" platform="Linux" configuration="Release" ctype="BinariesZipPackageBuilder">
-            <ChildEntries>
-              <SolutionItemReference path="howler\howler.csproj" />
-              <SolutionItemReference path="howlerTranslation\howlerTranslation.mdproj" />
-              <SolutionItemReference path="twitster\twitster.csproj" />
-            </ChildEntries>
-            <RootEntry path="howler.sln" id="{00A1468F-4C98-4A0B-BAEC-D06BDBD55AA0}" />
-          </Builder>
-        </Package>
-      </Packages>
-    </Packages>
   </PropertyGroup>
 </Project>

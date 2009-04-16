@@ -15,11 +15,46 @@ namespace howler
 	{
 		string name;
 		string user;
-		SecureString pass;
+		string pass;
 		string service;
+
+		public string Name {
+					get {
+						return name;
+					}
+					set {
+						name = value;
+					}
+				}
+
+		public string Pass {
+					get {
+						return pass;
+					}
+					set {
+						pass = value;
+					}
+				}
+
+		public string Service {
+					get {
+						return service;
+					}
+					set {
+						service = value;
+					}
+				}
+
+		public string User {
+					get {
+						return user;
+					}
+					set {
+						user = value;
+					}
+				}		
 		
-		
-		public AccountDetails(string name, string user, SecureString pass, string service)
+		public AccountDetails(string name, string user, string pass, string service)
 		{
 			this.name = name;
 			this.user = user;
@@ -31,7 +66,7 @@ namespace howler
 		{
 			this.name = (String)info.GetValue("name", typeof(string));
 			this.user = (String)info.GetValue("user", typeof(string));
-			this.pass = (SecureString)info.GetValue("pass", typeof(SecureString));
+			this.pass = (String)info.GetValue("pass", typeof(string));
 			this.service = (String)info.GetValue("service", typeof(string));
 		}
 		        

@@ -20,11 +20,11 @@ namespace howler
 			DIRECTS
 		};
 
-		QWidget credentialsFrame;
-		QLayout credentialsBox;
-		QLineEdit username;
-		QLineEdit password;
-		QPushButton loadButton;
+//		QWidget credentialsFrame;
+//		QLayout credentialsBox;
+//		QLineEdit username;
+//		QLineEdit password;
+//		QPushButton loadButton;
 		
 		QWidget tweetBoxFrame;
 		QLayout tweetBoxLayout;
@@ -79,7 +79,9 @@ namespace howler
 
 		public TwitterClient(QWidget parent)
 			:base( parent )
-		{			
+		{
+			twitterConnection = new Twitster();
+
 			currentView = TwitterView.HOME;
 
 			this.Load("Resources/howler_twitter_client.svg");
@@ -95,6 +97,7 @@ namespace howler
 
 			tweetBox = new QTextEdit(this);			
 			tweetBox.Enabled = false;
+			tweetBox.MaximumHeight = 80;
 			this.tweetBox.AcceptRichText = false;
 
 			tweetButton = new QPushButton(this);
@@ -104,26 +107,27 @@ namespace howler
 			Connect( tweetButton, SIGNAL("clicked()"), this, SLOT("tweet()") );
 			Connect( tweetBox, SIGNAL("textChanged()"), this, SLOT("updateCharCount()") );
 			
-			username = new QLineEdit(this);
-			password = new QLineEdit(this);
-			password.echoMode = QLineEdit.EchoMode.Password;
-			loadButton = new QPushButton(this);
-			loadButton.Text = "Load";
+//			username = new QLineEdit(this);
+//			password = new QLineEdit(this);
+//			password.echoMode = QLineEdit.EchoMode.Password;
+//			loadButton = new QPushButton(this);
+//			loadButton.Text = "Load";
 
-			credentialsFrame = new QWidget(this);
-			credentialsBox = new QHBoxLayout(credentialsFrame);
-			credentialsBox.AddWidget( username );
-			credentialsBox.AddWidget( password );
-			credentialsBox.AddWidget( loadButton );
-
-			Connect( loadButton, SIGNAL("clicked()"), this, SLOT("connect()") );
-
-			twitterLayout.AddWidget( credentialsFrame );
+//			credentialsFrame = new QWidget(this);
+//			credentialsBox = new QHBoxLayout(credentialsFrame);
+//			credentialsBox.AddWidget( username );
+//			credentialsBox.AddWidget( password );
+//			credentialsBox.AddWidget( loadButton );
+//
+//			Connect( loadButton, SIGNAL("clicked()"), this, SLOT("connect()") );
+//
+//			twitterLayout.AddWidget( credentialsFrame );
 
 			tweetBoxLayout.AddWidget( tweetBox );
 			tweetBoxLayout.AddWidget( tweetButton );
 
 			twitterLayout.AddWidget( tweetBoxFrame );
+			this.tweetBoxFrame.Hide();
 			
 			
 			controlsFrame = new QSvgWidget();
@@ -320,24 +324,27 @@ namespace howler
 		}
 		
 		[Q_SLOT("connect()")]
-		public void Connect()
+		public void Connect( string username, string password )
 		{
-			twitterConnection.Connect( this.username.Text, this.password.Text );
+			twitterConnection.Connect( username, password );
 			
-			this.username.Enabled = false;
-			this.password.Enabled = false;
-			
-			this.loadButton.Text = "Refresh";
-			this.loadButton.Disconnect();
-			
+//			this.username.Enabled = false;
+//			this.password.Enabled = false;
+//			
+//			this.loadButton.Text = "Refresh";
+//			this.loadButton.Disconnect();
+//			this.credentialsFrame.Hide();
+//			Connect( loadButton, SIGNAL("clicked()"), this, SLOT("refreshAndReset()") );
+
 			ShowHome();
-			
-			Connect( loadButton, SIGNAL("clicked()"), this, SLOT("refreshAndReset()") );
 			
 			tweetBox.Enabled = true;
 			tweetButton.Enabled = true;
 			
 			refreshTimer.Start();
+			
+			this.tweetBoxFrame.Show();
+
 		}
 		
 		public void refreshTimeout(object sender,EventArgs eArgs)
