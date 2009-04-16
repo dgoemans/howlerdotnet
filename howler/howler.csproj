@@ -55,6 +55,8 @@
     <Compile Include="Accounts\AccountDetails.cs" />
     <Compile Include="Accounts\AccountManager.cs" />
     <Compile Include="Accounts\AccountStore.cs" />
+    <Compile Include="UI\SettingsInterface.cs" />
+    <Compile Include="UI\ISettingsSignalEmitter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="howler.exe.config">
@@ -100,7 +102,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\install.sh">
-      <Gettext-ScanForTranslations>false</Gettext-ScanForTranslations>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\libqyoto.so">

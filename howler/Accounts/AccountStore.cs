@@ -12,6 +12,12 @@ namespace howler
 	{
 
 		AccountDetails twitter;
+
+		public AccountDetails Twitter 
+		{	
+			get {return twitter;}
+			set {twitter = value;}
+		}
 		
 		public AccountStore()
 		{
@@ -21,7 +27,7 @@ namespace howler
 		{
 			this.twitter = (AccountDetails)info.GetValue("twitter", typeof(AccountDetails));
 		}
-		        
+
 		//Serialization function.
 		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
 		{

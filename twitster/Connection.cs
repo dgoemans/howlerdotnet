@@ -54,11 +54,6 @@ namespace twitster
 			catch( WebException e )
 			{
 				Console.WriteLine( e.Message );
-				Stream stream = e.Response.GetResponseStream();
-				XmlDocument doc = new XmlDocument();
-				doc.Load(stream);
-				Console.WriteLine(doc.GetElementsByTagName("error").Item(0).InnerText);
-
 				return null;
 			}
 			
