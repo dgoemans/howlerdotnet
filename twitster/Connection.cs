@@ -126,6 +126,40 @@ namespace twitster
 			}
 			return result;
 		}
+		
+		public List<Message> GetDirectsRecieved(uint pageNumber)
+		{
+			List<Message> result = new List<Message>();
+			
+			XmlDocument doc = GetResponse( "http://twitter.com/statuses/direct_messages.xml?page=" + pageNumber + "&count=6", WebMethod.GET );
+			
+			if( doc != null )
+			{
+
+				// TODO: exchange this for something more efficient, like maybe check if a single status node exists
+				if( doc.GetElementsByTagName("direct-message").Count == 0 )
+				{
+					Console.WriteLine( "Invalid Response: Did not contain direct-message element" );
+					return result;
+				}
+	
+				// Enumerate the document and create the elements
+				XmlNode head = doc.SelectSingleNode("direct-messages");
+				if( head == null )
+				{
+					Console.WriteLine( "Invalid Response: Could not find direct-messages element" );
+					return result;
+				}
+	
+				IEnumerator it = head.GetEnumerator();
+				while( it.MoveNext() )
+				{
+					XmlNode current = (XmlNode)it.Current;
+					result.Add( new Message(current) );
+				}
+			}
+			return result;
+		}
 
 		public bool Update( string text )
 		{

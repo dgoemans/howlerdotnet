@@ -10,5 +10,8 @@ namespace howler
 	{
 		[Q_SIGNAL("settingsSaved()")]
 		void SettingsSaved();
+		
+		[Q_SIGNAL("accountAdded()")]
+		void AccountAdded();
 	}
 }
