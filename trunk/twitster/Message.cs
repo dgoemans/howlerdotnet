@@ -1,5 +1,8 @@
 
 using System;
+using System.Xml;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace twitster
 {
@@ -95,6 +98,48 @@ namespace twitster
 		
 		public Message()
 		{
+		}
+		
+		
+		public Message( XmlNode node )
+		{
+			IEnumerator it = node.GetEnumerator();
+			while( it.MoveNext() )
+			{
+				XmlNode current = (XmlNode)it.Current;
+				switch( current.Name )
+				{
+				case "created_at":
+					//TODO: Parse stupid created date format. Damn you twitter
+					CreatedAt = Helpers.ParseDateTime(current.InnerText);
+					break;
+				case "id":
+					long.TryParse(current.InnerText, out id );
+					break;
+				case "text":
+					Text = current.InnerText;
+					break;
+				case "sender_id":
+					long.TryParse( current.InnerText, out recipient_id );
+					break;
+				case "recipient_id":
+					long.TryParse( current.InnerText, out sender_id );
+					break;
+				case "recipient_screen_name":
+					RecipientScreenName = current.InnerText; 
+					break;
+				case "sender_screen_name":
+					SenderScreenName = current.InnerText; 
+					break;
+				case "sender":
+					Sender = new User( current );
+					break;
+				case "recipient":
+					Recipient = new User( current );
+					break;
+
+				}
+			}
 		}
 	}
 }

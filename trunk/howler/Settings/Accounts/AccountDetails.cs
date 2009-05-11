@@ -10,8 +10,7 @@ namespace howler
 {
 	
 	[Serializable()]
-
-	public class AccountDetails : ISerializable
+	public class AccountDetails
 	{
 		string name;
 		string user;
@@ -62,22 +61,10 @@ namespace howler
 			this.service = service;
 		}
 		
-		public AccountDetails(SerializationInfo info, StreamingContext ctxt)
+		public AccountDetails()
 		{
-			this.name = (String)info.GetValue("name", typeof(string));
-			this.user = (String)info.GetValue("user", typeof(string));
-			this.pass = (String)info.GetValue("pass", typeof(string));
-			this.service = (String)info.GetValue("service", typeof(string));
 		}
-		        
-		//Serialization function.
 		
-		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-		{
-			info.AddValue("name", this.name);
-			info.AddValue("user", this.user);
-			info.AddValue("pass", this.pass);
-			info.AddValue("service", this.service);
-		}
+
 	}
 }

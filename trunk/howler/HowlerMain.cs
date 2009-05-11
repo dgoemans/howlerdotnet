@@ -5,19 +5,22 @@ using System.Collections;
 using System.Collections.Generic;
 using Qyoto;
 
+
 namespace howler
 {	
 	public class HowlerMain : QWidget
 	{
-		SettingsInterface settings;
-//		Twitster twitterConnection;
+		SettingsController settings;
+		JabberClient jabberClient;
 		TwitterClient twitterClient;
 		
 		QStatusBar statusBar;
 		
 		QLayout mainLayout;
 		QTabWidget tabs;
-		QFrame imTab;
+		
+		QPushButton btnSettings;
+		
 
 		public QStatusBar StatusBar 
 		{
@@ -27,20 +30,18 @@ namespace howler
 		public HowlerMain()
 			: base( (QWidget)null )
 		{
-			
+		
 			tabs = new QTabWidget(this);
 
 			twitterClient = new TwitterClient(this);
-//			twitterClient.TwitterConnection = twitterConnection;
+			jabberClient = new JabberClient(this);
 			
-			imTab = new QFrame( this );
-
 			mainLayout = new QVBoxLayout(this);
 			mainLayout.Margin = 1;
 			
 			
 			//tabs.MinimumSize = new QSize( 360, 480 );
-			tabs.AddTab( imTab, "Chat" );
+			tabs.AddTab( jabberClient, "Chat" );
 			tabs.AddTab( twitterClient, "Twitter" );
 			
 			tabs.CurrentIndex = 1;
@@ -48,25 +49,37 @@ namespace howler
 			statusBar = new QStatusBar(this);
 			statusBar.AddPermanentWidget( twitterClient.StatusMessage );
 
+			btnSettings = new QPushButton(this);
+			btnSettings.Text = "...";
+			Connect( btnSettings, SIGNAL("clicked()"), this, SLOT("showSettings()") );
+			
 			mainLayout.AddWidget( tabs );
+			mainLayout.AddWidget(btnSettings);
 			mainLayout.AddWidget( statusBar );
 			
 			
 			//TODO: HACK: Move this to a much better place. Quick dirty hacks are not kewl.
-			settings = new SettingsInterface();
+			settings = new SettingsController();
 			
-			if( File.Exists("Accounts.dat" ) )
+			bool hasAccounts = settings.Init();
+			
+			if( !hasAccounts )
 			{
-				settings.Accounts.ReadData();
-				InitClientWindow();
+				settings.Show();
 			}
 			else
 			{
-				settings.Show();
+				InitClientWindow();
 			}
 			
 			Connect( settings, SIGNAL("settingsSaved()"), this, SLOT("initClientWindow()") );
 
+		}
+		
+		[Q_SLOT("showSettings()")]
+		public void ShowSettings()
+		{
+			settings.Show();			
 		}
 		
 //		public void TwitterLogin( string username, string password )
@@ -78,8 +91,17 @@ namespace howler
 		[Q_SLOT("initClientWindow()")]
 		public void InitClientWindow()
 		{
-			settings.Hide();
-			twitterClient.Connect( settings.Accounts.Store.Twitter.User, settings.Accounts.Store.Twitter.Pass );
+			AccountDetails account = settings.GetAccount("Twitter");
+			if( account != null )
+			{
+				twitterClient.Connect(account.User, account.Pass);
+			}
+			
+			account = settings.GetAccount("Google Talk");
+			if( account != null )
+			{
+				jabberClient.Connect(account.User, account.Pass);
+			}
 		}
 	}
 }

@@ -30,6 +30,11 @@ namespace twitster
 			return connection.GetRepliesTimeline( pageNumber );
 		}
 		
+		public List<Message> GetDirectsRecieved( uint pageNumber )
+		{
+			return connection.GetDirectsRecieved( pageNumber );
+		}
+		
 		public void UpdateStatus( string status )
 		{
 			if( connection == null ) throw new Exception("Null Connection");

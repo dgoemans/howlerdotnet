@@ -31,19 +31,15 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="Mono.Posix" />
-    <Reference Include="ubiety, Version=0.1.3365.33276, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ubiety.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="qt-dotnet, Version=4.5.0.0, Culture=neutral, PublicKeyToken=194a23ba31c08164">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\qt-dotnet.dll</HintPath>
+    </Reference>
+    <Reference Include="agsXMPP, Version=1.1.0.0, Culture=neutral, PublicKeyToken=ff839b81f1debe86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\agsXMPP.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -52,11 +48,15 @@
     <Compile Include="UI\TwitterTweet.cs" />
     <Compile Include="UI\TwitterClient.cs" />
     <Compile Include="UI\ITweetSignalEmitter.cs" />
-    <Compile Include="Accounts\AccountDetails.cs" />
-    <Compile Include="Accounts\AccountManager.cs" />
-    <Compile Include="Accounts\AccountStore.cs" />
-    <Compile Include="UI\SettingsInterface.cs" />
+    <Compile Include="UI\SettingsWidget.cs" />
     <Compile Include="UI\ISettingsSignalEmitter.cs" />
+    <Compile Include="Jabber\JabberClient.cs" />
+    <Compile Include="UI\AddAccountWidget.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Settings\Accounts\AccountDetails.cs" />
+    <Compile Include="Settings\Accounts\AccountManager.cs" />
+    <Compile Include="Settings\Accounts\AccountStore.cs" />
+    <Compile Include="Settings\SettingsManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="howler.exe.config">
@@ -113,6 +113,9 @@
     <None Include="Scripts\libsmokeqt.so.2.0.0">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\accounts_twittter.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\twitster\twitster.csproj">
@@ -122,6 +125,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="UI\" />
-    <Folder Include="Accounts\" />
+    <Folder Include="Jabber\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Settings\" />
   </ItemGroup>
 </Project>

@@ -117,7 +117,7 @@ namespace twitster
 				{
 				case "created_at":
 					//TODO: Parse stupid created date format. Damn you twitter
-					CreatedAt = Helpers.ParseDateTime(current.InnerText);
+					//CreatedAt = Helpers.ParseDateTime(current.InnerText);
 					break;
 				case "id":
 					long.TryParse(current.InnerText, out id );

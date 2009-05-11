@@ -283,6 +283,8 @@ namespace howler
 				break;
 			case TwitterView.DIRECTS:
 				statList = twitterConnection.GetFriendsTimeLine( currentTimelinePage );
+				// TODO: Make this handle a list of messages as received
+				//statList = twitterConnection.GetDirectsRecieved( currentTimelinePage );
 				break;
 			default:
 				statList = twitterConnection.GetFriendsTimeLine( currentTimelinePage );
@@ -361,28 +363,7 @@ namespace howler
 			access.Get( new QNetworkRequest( new QUrl( url ) ) );
 			//Console.Write( "." );
 
-		}
-
-//		public void testCase()
-//		{
-//			QNetworkAccessManager testAccess = new QNetworkAccessManager(this);
-//			Connect( testAccess, SIGNAL("finished(QNetworkReply*)"), this, SLOT("testReceived(QNetworkReply*)") );
-//			QUrl testUrl = new QUrl( "http://s3.amazonaws.com/twitter_production/profile_images/26491162/avatar_normal.jpg" );
-//			testAccess.Get( new QNetworkRequest( testUrl ) );
-//		}
-//		
-//		
-//		[Q_SLOT("testReceived(QNetworkReply*)")]
-//		public void TestReceived( QNetworkReply reply )
-//		{
-//			Console.WriteLine( "Error: " + reply.ErrorString() );
-//			string replyURL = reply.Url().ToString();
-//			QLabel lbl = new QLabel();
-//			lbl.Pixmap.LoadFromData( reply.ReadAll(), replyURL.Substring( replyURL.Length-3 )  );
-//			lbl.Text = "ashkdsa";
-//			controlsFrameLayout.AddWidget(lbl,0,6);
-//		}
-		
+		}		
 		
 		[Q_SLOT("startReply(QString)")]
 		public void StartReply(string screenName)
