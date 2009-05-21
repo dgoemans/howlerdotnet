@@ -1,5 +1,6 @@
 
 using System;
+using Jayrock.Json;
 
 namespace twitster
 {
@@ -20,5 +21,57 @@ namespace twitster
             DateTime ret = DateTime.Parse(dateTime);
             return ret;
         }
+		
+		public static void NullCheck( object o )
+		{
+			if( o == null )
+				throw new NullReferenceException("Object passed is null: " + o.ToString());
+		}
+		
+		public static bool ParseJSONBool( object toParse, out bool result )
+		{
+			try
+			{
+				result = ((JsonBoolean) toParse ).Equals( JsonBoolean.TrueText );
+				return true;
+			}
+			catch( Exception e )
+			{
+				Console.WriteLine("Could not parse value from JSON: ", e.Message );
+				result = false;
+				return false;
+			}
+		}
+		
+		public static bool ParseJSONLong( object toParse, out long result )
+		{
+			try
+			{
+				result = ((JsonNumber) toParse ).ToInt64();
+				return true;
+			}
+			catch( Exception e )
+			{
+				Console.WriteLine("Could not parse value from JSON: ", e.Message );
+				result = 0;
+				return false;
+			}
+		}
+
+		public static bool ParseJSONInt( object toParse, out int result )
+		{
+			try
+			{
+				result = ((JsonNumber) toParse ).ToInt32();
+				return true;
+			}
+			catch( Exception e )
+			{
+				Console.WriteLine("Could not parse value from JSON: ", e.Message );
+				result = 0;
+				return false;
+			}
+		}
+		
 	}
 }

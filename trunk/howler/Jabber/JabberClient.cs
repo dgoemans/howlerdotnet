@@ -16,11 +16,14 @@ namespace howler
 		
 		XmppClientConnection jabberCon;
 		QListWidget contactsList;
+		ChatWidget chatW;
 
 		public JabberClient(QWidget parent)
 		:
 		base(parent)
 		{
+			chatW = new ChatWidget(null);
+			
 			contactsList = new QListWidget(this);
 			
 			jabberCon = new XmppClientConnection();
@@ -29,13 +32,8 @@ namespace howler
 			
 			jabberCon.OnRosterItem += new XmppClientConnection.RosterHandler(OnContactChange);
 			
-			jabberCon.OnLogin += delegate(object o) 
-			{
-				// TODO: setup contacts list refresh, etc
-				Console.WriteLine("Connected: " + jabberCon.Authenticated );
-				//jabberCon.Send(new Message("test@gmail.com", MessageType.chat, "Ping")); 
-			};
-			
+			jabberCon.OnLogin += new ObjectHandler(OnLogin);
+		
 			jabberCon.OnAuthError += delegate(object sender, agsXMPP.Xml.Dom.Element e) 
 			{
 				// TODO: alert message
@@ -57,6 +55,14 @@ namespace howler
 		public void OnContactChange(object sender, RosterItem item)
 		{
 			Console.WriteLine( item + " called " + item.Jid  );
+		}
+		
+		public void OnLogin( object sender )
+		{
+			// TODO: setup contacts list refresh, etc
+			chatW.ContactID = "dgoemans@gmail.com";
+			chatW.Conn = jabberCon;
+			chatW.Show();
 		}
 	}
 }

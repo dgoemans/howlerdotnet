@@ -7,31 +7,32 @@ using System.Web;
 using System.Net;
 using twitster;
 using Qyoto;
-using System.Timers;
+using System.Threading;
 
 namespace howler
 {	
 	public class TwitterClient : QSvgWidget
 	{
+		const int refreshTime = 5000*60;
+		
 		enum TwitterView
 		{
 			HOME,
 			REPLIES,
-			DIRECTS
+			DIRECTS,
+			SEARCH
 		};
-
-//		QWidget credentialsFrame;
-//		QLayout credentialsBox;
-//		QLineEdit username;
-//		QLineEdit password;
-//		QPushButton loadButton;
+		
+		List<Status> statusList;
+			
+		const int statusesPerPage = 6;
+		const int numPages = 6;
 		
 		QWidget tweetBoxFrame;
 		QLayout tweetBoxLayout;
 		QTextEdit tweetBox;
 		QPushButton tweetButton;
 		
-		Twitster twitterConnection;
 		List<TwitterTweet> tweets;
 		QLayout twitterLayout;
 		
@@ -57,15 +58,19 @@ namespace howler
 		
 		uint currentTimelinePage;
 		
-		Timer refreshTimer;
+		System.Timers.Timer refreshTimer;
+		Thread threadReply;
+		
+		QWidget searchFrame;
+		QHBoxLayout searchLayout;
+		QPushButton searchButton;
+		QLineEdit searchBox;
 
-		public Twitster TwitterConnection {
-			get {
-				return twitterConnection;
-			}
-			set {
-				twitterConnection = value;
-			}
+		Twitster twitter;
+		public Twitster Twitter 
+		{
+			get {return twitter;	}
+			set {twitter = value;}
 		}
 
 		public QLabel StatusMessage {
@@ -80,7 +85,8 @@ namespace howler
 		public TwitterClient(QWidget parent)
 			:base( parent )
 		{
-			twitterConnection = new Twitster();
+			
+			twitter = new Twitster();
 
 			currentView = TwitterView.HOME;
 
@@ -95,40 +101,21 @@ namespace howler
 			tweetBoxFrame = new QWidget( this );
 			tweetBoxLayout = new QHBoxLayout( tweetBoxFrame );
 
-			tweetBox = new QTextEdit(this);			
-			tweetBox.Enabled = false;
+			tweetBox = new QTextEdit(this);
 			tweetBox.MaximumHeight = 80;
 			this.tweetBox.AcceptRichText = false;
 
 			tweetButton = new QPushButton(this);
 			tweetButton.MinimumSize = new QSize( 64,64 );
 			tweetButton.Text = "Tweet";
-			tweetButton.Enabled = false;
 			Connect( tweetButton, SIGNAL("clicked()"), this, SLOT("tweet()") );
 			Connect( tweetBox, SIGNAL("textChanged()"), this, SLOT("updateCharCount()") );
-			
-//			username = new QLineEdit(this);
-//			password = new QLineEdit(this);
-//			password.echoMode = QLineEdit.EchoMode.Password;
-//			loadButton = new QPushButton(this);
-//			loadButton.Text = "Load";
-
-//			credentialsFrame = new QWidget(this);
-//			credentialsBox = new QHBoxLayout(credentialsFrame);
-//			credentialsBox.AddWidget( username );
-//			credentialsBox.AddWidget( password );
-//			credentialsBox.AddWidget( loadButton );
-//
-//			Connect( loadButton, SIGNAL("clicked()"), this, SLOT("connect()") );
-//
-//			twitterLayout.AddWidget( credentialsFrame );
 
 			tweetBoxLayout.AddWidget( tweetBox );
 			tweetBoxLayout.AddWidget( tweetButton );
 
 			twitterLayout.AddWidget( tweetBoxFrame );
 			this.tweetBoxFrame.Hide();
-			
 			
 			controlsFrame = new QSvgWidget();
 			controlsFrameLayout = new QGridLayout(controlsFrame);
@@ -195,13 +182,24 @@ namespace howler
 			replies_image.Size = new QSize( 40, 40 );
 
 			twitterLayout.AddWidget( controlsFrame );
+			
+			searchFrame = new QWidget(this);
+			searchLayout = new QHBoxLayout(searchFrame);
+			searchButton = new QPushButton(this);
+			searchButton.Text = "search";
+			
+			searchBox = new QLineEdit(this);
+			
+			searchLayout.AddWidget( searchBox );
+			searchLayout.AddWidget( searchButton );
+			Connect( searchButton, SIGNAL("clicked()"), this, SLOT("search()") );
 
+			twitterLayout.AddWidget( searchFrame );
+			
 			statusMessage = new QLabel(this);
 			UpdateStatusText();
-			
-			// 5 min auto update
-			// TODO: make this time configurable
-			refreshTimer = new Timer(5000*60);
+						
+			refreshTimer = new System.Timers.Timer(refreshTime);
 			refreshTimer.AutoReset = true;
 			refreshTimer.Elapsed += refreshTimeout;
 		}
@@ -209,6 +207,8 @@ namespace howler
 		[Q_SLOT("showHome()")]
 		public void ShowHome()
 		{
+			currentTimelinePage = 1;
+			
 			home_image.Load("Resources/howler_button_home_busy.svg");
 			replies_image.Load("Resources/howler_button_replies.svg");
 			directs_image.Load("Resources/howler_button_na.svg");
@@ -220,6 +220,8 @@ namespace howler
 		[Q_SLOT("showReplies()")]
 		public void ShowReplies()
 		{
+			currentTimelinePage = 1;
+			
 			home_image.Load("Resources/howler_button_home.svg");
 			replies_image.Load("Resources/howler_button_replies_busy.svg");
 			directs_image.Load("Resources/howler_button_na.svg");
@@ -231,6 +233,8 @@ namespace howler
 		[Q_SLOT("showDirects()")]
 		public void ShowDirects()
 		{
+			currentTimelinePage = 1;
+			
 			home_image.Load("Resources/howler_button_home.svg");
 			replies_image.Load("Resources/howler_button_replies.svg");
 			directs_image.Load("Resources/howler_button_na.svg");
@@ -239,7 +243,34 @@ namespace howler
 			Refresh();
 		}
 		
+		[Q_SLOT("search()")]
+		public void Search()
+		{
+			currentTimelinePage = 1;
+			
+			home_image.Load("Resources/howler_button_home.svg");
+			replies_image.Load("Resources/howler_button_replies.svg");
+			directs_image.Load("Resources/howler_button_na.svg");
+
+			currentView = TwitterView.SEARCH;
+			Refresh();
+		}
 		
+		[Q_SLOT("search(QString)")]
+		public void Search(string searchString)
+		{
+			this.searchBox.Text = searchString;
+			
+			currentTimelinePage = 1;
+			
+			home_image.Load("Resources/howler_button_home.svg");
+			replies_image.Load("Resources/howler_button_replies.svg");
+			directs_image.Load("Resources/howler_button_na.svg");
+
+			currentView = TwitterView.SEARCH;
+			Refresh();
+		}
+
 		
 		[Q_SLOT("updateCharCount()")]
 		public void UpdateCharCount()
@@ -257,9 +288,8 @@ namespace howler
 			currentTimelinePage = 1;
 			Refresh();
 		}
-
-		[Q_SLOT("refresh()")]
-		public void Refresh()
+		
+		private void ClearTweets()
 		{
 			foreach( TwitterTweet t in tweets )
 			{
@@ -269,45 +299,109 @@ namespace howler
 			}
 
 			tweets.Clear();
-
-			//tweets = new List<TwitterTweet>();
-			List<Status> statList = null;
+		}
+		
+		private void FillTweets()
+		{
+			int currentPos = (int)(currentTimelinePage-1)*statusesPerPage;
+			if( currentPos >= statusList.Count ) currentPos = statusList.Count;
+			int upperBound = currentPos + statusesPerPage;
+			if( upperBound >= statusList.Count ) upperBound = statusList.Count;
 			
-			switch( currentView )
-			{
-			case TwitterView.HOME:
-				statList = twitterConnection.GetFriendsTimeLine( currentTimelinePage );
-				break;
-			case TwitterView.REPLIES:
-				statList = twitterConnection.GetRepliesTimeLine( currentTimelinePage );
-				break;
-			case TwitterView.DIRECTS:
-				statList = twitterConnection.GetFriendsTimeLine( currentTimelinePage );
-				// TODO: Make this handle a list of messages as received
-				//statList = twitterConnection.GetDirectsRecieved( currentTimelinePage );
-				break;
-			default:
-				statList = twitterConnection.GetFriendsTimeLine( currentTimelinePage );
-				break;
-			}
-			
-
-			foreach( Status s in statList )
+			for( int i =  currentPos; i < upperBound; i++ )
 			{
 				TwitterTweet tweet = new TwitterTweet( this );
-				tweet.SetStatus( s );
+				tweet.SetStatus( statusList[i] );
 				tweets.Add( tweet );
 				twitterLayout.AddWidget( tweet );
 				
-				GetImageFromURL( s.User.ProfileImageUrl, ref tweet );
+				GetImageFromURL( statusList[i].User.ProfileImageUrl, ref tweet );
 				
 				Connect( tweet, SIGNAL("replyTo(QString)"), this, SLOT("startReply(QString)") );
+				Connect( tweet, SIGNAL("search(QString)"), this, SLOT("search(QString)") );
 			}
 			
 			this.Size = twitterLayout.MinimumSize();
-
 			UpdateStatusText();
+		}
+		
+		private void GetNewStatusList()
+		{
+			if( statusList != null )
+			{
+				statusList.Clear();
+			}
 			
+			statusList = null;
+
+			switch( currentView )
+			{
+			case TwitterView.HOME:
+				statusList = twitter.Connection.GetFriendsTimeline( statusesPerPage*numPages );
+				break;
+			case TwitterView.REPLIES:
+				statusList = twitter.Connection.GetRepliesTimeline( statusesPerPage*numPages );
+				break;
+			case TwitterView.DIRECTS:
+				statusList = twitter.Connection.GetFriendsTimeline( statusesPerPage*numPages );
+				// TODO: Make this handle a list of messages as received
+				//statList = twitter.Connection.GetDirectsRecieved( statusesPerPage*numPages );
+				break;
+			case TwitterView.SEARCH:
+				statusList = twitter.Connection.GetSearchResponse( Uri.EscapeDataString( this.searchBox.Text ), statusesPerPage*numPages );
+				break;
+			default:
+				statusList = twitter.Connection.GetFriendsTimeline( statusesPerPage*numPages );
+				break;
+			}
+			
+			this.control_refresh.Click();
+
+		}
+		
+		private void DisableControls()
+		{
+			this.control_directs.Enabled = false;
+			this.control_home.Enabled = false;
+			this.control_nextPage.Enabled = false;
+			this.control_prevPage.Enabled = false;
+			//this.control_refresh.Enabled = false;
+			this.control_replies.Enabled = false;
+			this.tweetButton.Enabled = false;
+			this.searchButton.Enabled = false;
+		}
+		
+		private void EnableControls()
+		{
+			this.control_directs.Enabled = true;
+			this.control_home.Enabled = true;
+			this.control_nextPage.Enabled = true;
+			this.control_prevPage.Enabled = true;
+			//this.control_refresh.Enabled = true;
+			this.control_replies.Enabled = true;
+			this.tweetButton.Enabled = true;
+			this.searchButton.Enabled = true;
+		}
+
+		[Q_SLOT("refresh()")]
+		public void Refresh()
+		{
+			if( threadReply != null && (threadReply.ThreadState == ThreadState.Stopped || threadReply.ThreadState == ThreadState.Aborted ) )
+			{
+				ClearTweets();
+				FillTweets();
+				threadReply = null;
+
+				EnableControls();
+			}
+			else if( threadReply == null )
+			{				
+				DisableControls();
+
+				threadReply = new Thread( new ThreadStart( GetNewStatusList ) );
+				threadReply.Start();
+			}
+
 			refresh_image.Load("Resources/howler_button_refresh.svg");
 		}
 		
@@ -316,10 +410,8 @@ namespace howler
 		{
 			string escapedText = Uri.EscapeDataString( this.tweetBox.PlainText );
 			escapedText.Replace(@"#",@"%23");
-			Console.WriteLine("Escaped Text:");
-			Console.WriteLine( escapedText );
 
-			this.twitterConnection.UpdateStatus( escapedText );
+			this.twitter.Connection.Update( escapedText );
 			this.tweetBox.Clear();
 			
 			Refresh();
@@ -328,20 +420,9 @@ namespace howler
 		[Q_SLOT("connect()")]
 		public void Connect( string username, string password )
 		{
-			twitterConnection.Connect( username, password );
+			twitter.Connect( username, password );
 			
-//			this.username.Enabled = false;
-//			this.password.Enabled = false;
-//			
-//			this.loadButton.Text = "Refresh";
-//			this.loadButton.Disconnect();
-//			this.credentialsFrame.Hide();
-//			Connect( loadButton, SIGNAL("clicked()"), this, SLOT("refreshAndReset()") );
-
 			ShowHome();
-			
-			tweetBox.Enabled = true;
-			tweetButton.Enabled = true;
 			
 			refreshTimer.Start();
 			
@@ -371,31 +452,36 @@ namespace howler
 			this.tweetBox.SetFocus();
 			this.tweetBox.InsertPlainText( screenName + " " );
 		}
-		
+
 		[Q_SLOT("prevPage()")]
 		public void PrevPage()
 		{
 			if( currentTimelinePage > 1 )
 			{
 				currentTimelinePage--;
-				Refresh();
+				
+				ClearTweets();
+				FillTweets();
 			}
 		}
 		
 		[Q_SLOT("nextPage()")]
 		public void NextPage()
 		{
-			if( currentTimelinePage < 30 )
+			if( currentTimelinePage < numPages )
 			{
 				currentTimelinePage++;
-				Refresh();
+
+				ClearTweets();
+				FillTweets();
+
 			}
 		}
 		
 		void UpdateStatusText()
 		{
 			int left = 140 - this.tweetBox.PlainText.Length;
-			this.statusMessage.Text = left.ToString() + " - Page: " + currentTimelinePage;
+			this.statusMessage.Text = left.ToString() + " - Page: " + currentTimelinePage + "/" + numPages;
 			
 			if( left < 0 )
 			{

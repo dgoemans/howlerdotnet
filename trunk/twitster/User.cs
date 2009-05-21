@@ -3,6 +3,7 @@ using System;
 using System.Xml;
 using System.Collections;
 using System.Collections.Generic;
+using Jayrock.Json;
 
 namespace twitster
 {
@@ -19,7 +20,6 @@ namespace twitster
 		string url;
 		bool isProtected;
 		int followersCount;
-		Status status;
 
 		public string Description {
 							get {
@@ -93,15 +93,6 @@ namespace twitster
 				location = value;
 			}
 		}
-	
-		public Status Status {
-				get {
-					return status;
-				}
-				set {
-					status = value;
-				}
-			}
 
 		public User(XmlNode node)
 		{
@@ -140,6 +131,23 @@ namespace twitster
 					break;
 				}
 			}
+		}
+		
+		public User()
+		{
+		}
+		
+		public User( JsonObject node )
+		{
+			Helpers.ParseJSONLong( node["id"], out this.id );
+			this.name = (string)node["name"];
+			this.screenName = (string)node["screen_name"];
+			this.description = (string)node["description"];
+			this.location = (string)node["location"];
+			this.profileImageUrl = (string)node["profile_image_url"];
+			this.url = (string)node["url"];
+			Helpers.ParseJSONBool( node["protected"], out this.isProtected );
+			Helpers.ParseJSONInt( node["followers_count"], out this.followersCount );
 		}
 	}
 }
