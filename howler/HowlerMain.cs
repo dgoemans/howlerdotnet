@@ -100,7 +100,7 @@ namespace howler
 			account = settings.GetAccount("Google Talk");
 			if( account != null )
 			{
-				jabberClient.Connect(account.User, account.Pass);
+				//jabberClient.Connect(account.User, account.Pass);
 			}
 		}
 	}

@@ -3,6 +3,7 @@ using System;
 using System.Xml;
 using System.Collections;
 using System.Collections.Generic;
+using Jayrock.Json;
 
 namespace twitster
 {
@@ -146,6 +147,52 @@ namespace twitster
 				case "user":
 					User = new User( current );
 					break;
+				}
+			}
+		}
+		
+		public Status( JsonObject node, bool hackForSearchAPI )
+		{
+			// "created_at":
+			//TODO: Parse stupid created date format. Damn you twitter
+			//this.created_at = blah blah node["created_at"];
+			
+			Helpers.ParseJSONLong(node["id"], out this.id);
+			this.text = (string)node["text"];
+			
+			this.source = (string)node["source"];
+			
+			// Fix the URL
+			this.source = this.source.Replace("&lt;","<");
+			this.source = this.source.Replace("&gt;",">");
+			this.source = this.source.Replace("&quot;","\"");
+
+			
+			Helpers.ParseJSONBool(node["truncated"], out this.truncated);
+			Helpers.ParseJSONLong(node["in_reply_to_status_id"], out this.in_reply_to_status_id);
+			Helpers.ParseJSONLong(node["in_reply_to_user_id"], out this.in_reply_to_user_id);
+			Helpers.ParseJSONBool(node["favorited"], out this.favorited);
+			this.in_reply_to_screen_name = (string)node["in_reply_to_screen_name"];
+			
+			
+			if( hackForSearchAPI )
+			{
+				Helpers.ParseJSONLong(node["to_user_id"], out this.in_reply_to_user_id);
+				
+				this.user = new User();
+				
+				long tmp;
+				Helpers.ParseJSONLong(node["from_user_id"], out tmp);
+				user.Id = tmp;
+				user.Name = (string)node["from_user"];
+				user.ProfileImageUrl = (string)node["profile_image_url"];
+
+			}
+			else
+			{
+				if( node["user"] != null )
+				{
+					this.user = new User( (JsonObject)node["user"] );
 				}
 			}
 		}

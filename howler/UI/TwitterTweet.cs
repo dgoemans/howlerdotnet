@@ -54,12 +54,29 @@ namespace howler
 			
 			for( int i = 0; i < words.Length; i++ )
 			{
+				#region Name Handling
+
 				if( words[i].Length > 2 && words[i][0] == '@' )
 				{
 					
 					string newFirst = "@<a href=\"" + words[i] + "\">" + words[i].Substring(1) + "</a>";
 					words[i] = newFirst;
 				}
+				
+				#endregion
+				
+				#region Hash Tag Handling
+				
+				if( words[i].Length > 2 && words[i][0] == '#' )
+				{
+					
+					string newFirst = "#<a href=\"" + words[i] + "\">" + words[i].Substring(1) + "</a>";
+					words[i] = newFirst;
+				}
+
+				#endregion
+				
+				#region URL Handling
 				
 				QUrl url = new QUrl( words[i], QUrl.ParsingMode.StrictMode );
 				
@@ -69,6 +86,8 @@ namespace howler
 					string newFirst = "<a href=\"" + words[i] + "\">" + words[i] + "</a>";
 					words[i] = newFirst;
 				}
+				
+				#endregion
 			}
 
 			text = "<b><a href=\"@" + status.User.ScreenName + "\">" + status.User.ScreenName + "</a>: </b>";
@@ -111,6 +130,10 @@ namespace howler
 			if( link[0] == '@' )
 			{
 				Emit.ReplyTo( link );
+			}
+			else if( link[0] == '#' )
+			{
+				Emit.Search( link );
 			}
 			else
 			{

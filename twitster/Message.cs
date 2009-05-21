@@ -3,6 +3,7 @@ using System;
 using System.Xml;
 using System.Collections;
 using System.Collections.Generic;
+using Jayrock.Json;
 
 namespace twitster
 {
@@ -140,6 +141,24 @@ namespace twitster
 
 				}
 			}
+		}
+		
+		public Message( JsonObject node )
+		{
+			// TODO: FIX STUPID CREATED AT CRAP
+			//this.created_at;
+			Helpers.ParseJSONLong( node["id"], out this.id );
+			
+			this.text = (string)node["text"];
+			
+			Helpers.ParseJSONLong( node["sender_id"], out this.sender_id );
+			Helpers.ParseJSONLong( node["recipient_id"], out this.recipient_id );
+				
+			this.sender_screen_name = (string)node["sender_screen_name"];
+			this.recipient_screen_name = (string)node["recipient_screen_name"];
+			
+			this.sender = new User( (JsonObject) node["sender"] );
+			this.recipient = new User( (JsonObject) node["recipient"] );
 		}
 	}
 }
