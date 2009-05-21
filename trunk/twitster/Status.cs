@@ -185,6 +185,7 @@ namespace twitster
 				Helpers.ParseJSONLong(node["from_user_id"], out tmp);
 				user.Id = tmp;
 				user.Name = (string)node["from_user"];
+				user.ScreenName = (string)node["from_user"];
 				user.ProfileImageUrl = (string)node["profile_image_url"];
 
 			}
