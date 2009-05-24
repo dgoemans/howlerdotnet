@@ -45,6 +45,21 @@ namespace howler
 			this.layout.AddWidget( text );
 
 		}
+		
+		public void SetItem( ITwitterItem item )
+		{
+			Status s = item as Status;
+			Message m = item as Message;
+			
+			if( s != null )
+			{
+				SetStatus( s );
+			}
+			else if( m != null )
+			{
+				SetMessage( m );
+			}
+		}
 
 		public void SetStatus( Status status )
 		{
@@ -99,6 +114,66 @@ namespace howler
 			
 			text += "<br>(posted from: " + status.Source + ")";
 			
+			this.text.Text = text;
+			int height = this.text.HeightForWidth( 250 ) ;
+			this.text.MinimumSize = new QSize( 250, height );
+
+			QObject.Connect( this.text, SIGNAL("linkActivated(QString)"), this, SLOT("linkClicked(QString)") );
+			
+			this.image.Pixmap = new QPixmap("Resources/howler_icon.png");
+		}
+		
+		void SetMessage( Message message )
+		{
+			string text = message.Text;
+			
+			string[] words = text.Split( new char[] {' '});
+			
+			for( int i = 0; i < words.Length; i++ )
+			{
+				#region Name Handling
+
+				if( words[i].Length > 2 && words[i][0] == '@' )
+				{
+					
+					string newFirst = "@<a href=\"" + words[i] + "\">" + words[i].Substring(1) + "</a>";
+					words[i] = newFirst;
+				}
+				
+				#endregion
+				
+				#region Hash Tag Handling
+				
+				if( words[i].Length > 2 && words[i][0] == '#' )
+				{
+					
+					string newFirst = "#<a href=\"" + words[i] + "\">" + words[i].Substring(1) + "</a>";
+					words[i] = newFirst;
+				}
+
+				#endregion
+				
+				#region URL Handling
+				
+				QUrl url = new QUrl( words[i], QUrl.ParsingMode.StrictMode );
+				
+
+				if( url.IsValid() && !url.IsRelative() && words[i].Contains("//") )
+				{
+					string newFirst = "<a href=\"" + words[i] + "\">" + words[i] + "</a>";
+					words[i] = newFirst;
+				}
+				
+				#endregion
+			}
+
+			text = "From <b><a href=\"@" + message.SenderScreenName + "\">" + message.SenderScreenName + "</a>: </b>";
+			
+			foreach( string s in words )
+			{
+				text += s+" ";
+			}
+
 			this.text.Text = text;
 			int height = this.text.HeightForWidth( 250 ) ;
 			this.text.MinimumSize = new QSize( 250, height );
