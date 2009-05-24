@@ -202,6 +202,9 @@ namespace howler
 			refreshTimer = new System.Timers.Timer(refreshTime);
 			refreshTimer.AutoReset = true;
 			refreshTimer.Elapsed += refreshTimeout;
+			
+			
+			tweetBox.SetFocus();
 		}
 		
 		[Q_SLOT("showHome()")]
