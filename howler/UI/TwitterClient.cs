@@ -23,7 +23,7 @@ namespace howler
 			SEARCH
 		};
 		
-		List<Status> statusList;
+		List<ITwitterItem> statusList;
 			
 		const int statusesPerPage = 6;
 		const int numPages = 6;
@@ -311,17 +311,19 @@ namespace howler
 			for( int i =  currentPos; i < upperBound; i++ )
 			{
 				TwitterTweet tweet = new TwitterTweet( this );
-				tweet.SetStatus( statusList[i] );
+				tweet.SetItem( statusList[i] );
+				
 				tweets.Add( tweet );
 				twitterLayout.AddWidget( tweet );
 				
-				GetImageFromURL( statusList[i].User.ProfileImageUrl, ref tweet );
+				GetImageFromURL( statusList[i].imageUrl(), ref tweet );
 				
 				Connect( tweet, SIGNAL("replyTo(QString)"), this, SLOT("startReply(QString)") );
 				Connect( tweet, SIGNAL("search(QString)"), this, SLOT("search(QString)") );
 			}
 			
 			this.Size = twitterLayout.MinimumSize();
+
 			UpdateStatusText();
 		}
 		
@@ -343,9 +345,7 @@ namespace howler
 				statusList = twitter.Connection.GetRepliesTimeline( statusesPerPage*numPages );
 				break;
 			case TwitterView.DIRECTS:
-				statusList = twitter.Connection.GetFriendsTimeline( statusesPerPage*numPages );
-				// TODO: Make this handle a list of messages as received
-				//statList = twitter.Connection.GetDirectsRecieved( statusesPerPage*numPages );
+				statusList = twitter.Connection.GetDirectsRecieved( statusesPerPage*numPages );
 				break;
 			case TwitterView.SEARCH:
 				statusList = twitter.Connection.GetSearchResponse( Uri.EscapeDataString( this.searchBox.Text ), statusesPerPage*numPages );
