@@ -61,6 +61,8 @@ namespace howler
 			pageLayout.AddWidget( btnOk, 4,1 );
 			pageLayout.AddWidget( btnCancel, 4,2 );
 			
+			Connect(ePassword, SIGNAL("returnPressed()"), btnOk, SLOT("click()") );
+			
 			Connect(btnCancel, SIGNAL("clicked()"), this, SLOT("dismiss()") );
 			Connect(btnOk, SIGNAL("clicked()"), this, SLOT("save()") );
 		}

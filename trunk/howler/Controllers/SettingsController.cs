@@ -68,6 +68,7 @@ namespace howler
 			if( toRemove != null )
 			{
 				settingsManager.AccountManager.Store.Accounts.Remove( toRemove );
+				settingsManager.Save();
 				return true;
 			}
 
